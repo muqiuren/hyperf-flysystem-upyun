@@ -1,6 +1,7 @@
 {
     "name": "muqiuren/hyperf-flysystem-upyun",
     "description": "hyperf框架的flysystem文件系统的upyun存储驱动",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Muqiuren\\Hyperf\\Flysystem\\": "src/"
@@ -8,7 +9,8 @@
     },
     "authors": [
         {
-            "name": "muqiuren <hatch.muqiuren@gmail.com>"
+            "name": "muqiuren",
+            "email": "hatch.muqiuren@gmail.com"
         }
     ],
     "require": {
