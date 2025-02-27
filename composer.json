@@ -1,0 +1,19 @@
+{
+    "name": "muqiuren/hyperf-flysystem-upyun",
+    "description": "hyperf框架的flysystem文件系统的upyun存储驱动",
+    "autoload": {
+        "psr-4": {
+            "Muqiuren\\Hyperf\\Flysystem\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "muqiuren <hatch.muqiuren@gmail.com>"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "hyperf/filesystem": "^3.1",
+        "alapi/upyun-sdk": "^4.0"
+    }
+}
