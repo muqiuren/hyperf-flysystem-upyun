@@ -35,4 +35,18 @@ enum UpyunHeaderEnum: string
     case FILE_SIZE = 'x-upyun-file-size';
 
     case FILE_DATE = 'x-upyun-file-date';
+
+    /**
+     * 获取所有enums值
+     * @return array
+     */
+    public static function getValues(): array
+    {
+        $cases = static::cases();
+        foreach ($cases as &$item) {
+            $item = $item->value;
+        }
+        unset($item);
+        return $cases;
+    }
 }

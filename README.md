@@ -30,7 +30,9 @@ composer require muqiuren/hyperf-flysystem-upyun
         'username' => env('UPYUN_USERNAME'),
         'password' => env('UPYUN_PASSWORD'),
         'bucket_name' => env('UPYUN_BUCKET'),
-        'options' => []
+        'options' => [
+            UpyunHeaderEnum::CONTENT_SECRET->value => 'common_secret'
+        ]
     ]
 ]
 ```
@@ -44,7 +46,9 @@ public function putObject(\Hyperf\Filesystem\FilesystemFactory $factory)
     $storage = $factory->get('upyun');
     $path = '/test/hello.txt';
     $content = 'hello world';
-    $config = new \League\Flysystem\Config();
+    $config = new \League\Flysystem\Config([
+        UpyunHeaderEnum::CONTENT_SECRET->value => 'custom_secret'
+    ]);
     $storage->write($path, $content, $config);
 }
 ```

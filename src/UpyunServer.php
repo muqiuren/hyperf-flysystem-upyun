@@ -40,6 +40,17 @@ class UpyunServer implements FilesystemAdapter
     }
 
     /**
+     * 携带可用请求头参数
+     * @param Config $config
+     * @return array
+     */
+    protected function withAvailableHeaders(Config $config): array
+    {
+        $availableHeaders = UpyunHeaderEnum::getValues();
+        return array_filter($config->toArray(), fn($v, $k) => in_array($k, $availableHeaders, true), ARRAY_FILTER_USE_BOTH);
+    }
+
+    /**
      * 检测文件是否存在
      * @param string $path
      * @return bool
@@ -78,7 +89,7 @@ class UpyunServer implements FilesystemAdapter
     public function write(string $path, string $contents, Config $config): void
     {
         try {
-            $this->client->write($path, $contents);
+            $this->client->write($path, $contents, $this->withAvailableHeaders($config));
         } catch (Throwable $e) {
             throw UnableToWriteFile::atLocation($path, $e);
         }
@@ -100,7 +111,7 @@ class UpyunServer implements FilesystemAdapter
                 throw new \RuntimeException('Unable to open stream for reading: ' . $path);
             }
 
-            $this->client->write($path, $resource);
+            $this->client->write($path, $resource, $this->withAvailableHeaders($config));
 
             if ($resource !== $contents) {
                 fclose($resource);

@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": ">=8.1",
         "hyperf/filesystem": "^3.1",
         "alapi/upyun-sdk": "^4.0"
     }
