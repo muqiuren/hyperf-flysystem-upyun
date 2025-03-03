@@ -56,5 +56,5 @@ public function putObject(\Hyperf\Filesystem\FilesystemFactory $factory)
 
 ### TODO
 
-- [ ] 列出目录文件内容
-- [ ] 支持配置header以及meta信息
+- [x] 列出目录文件内容
+- [x] 支持配置header以及meta信息
