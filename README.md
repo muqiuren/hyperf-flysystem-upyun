@@ -6,10 +6,10 @@ hyperf框架的flysystem文件系统的upyun(又拍云)的云存储驱动实现
 
 [League Flysystem](https://github.com/thephpleague/flysystem)
 
-[![PHP Version Require](http://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/require/php)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
-[![License](http://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/license)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
-[![Total Downloads](http://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/downloads)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
-[![Latest Stable Version](http://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/v)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
+[![PHP Version Require](https://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/require/php)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
+[![License](https://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/license)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
+[![Total Downloads](https://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/downloads)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
+[![Latest Stable Version](https://poser.pugx.org/muqiuren/hyperf-flysystem-upyun/v)](https://packagist.org/packages/muqiuren/hyperf-flysystem-upyun)
 
 ### 安装
 
@@ -46,10 +46,9 @@ public function putObject(\Hyperf\Filesystem\FilesystemFactory $factory)
     $storage = $factory->get('upyun');
     $path = '/test/hello.txt';
     $content = 'hello world';
-    $config = new \League\Flysystem\Config([
-        UpyunHeaderEnum::CONTENT_SECRET->value => 'custom_secret'
+    $storage->write($path, $content, [
+        UpyunHeaderEnum::CONTENT_SECRET->value => 'custom_single_file_secret'
     ]);
-    $storage->write($path, $content, $config);
 }
 ```
 
