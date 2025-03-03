@@ -22,7 +22,7 @@ enum UpyunHeaderEnum: string
 
     case METADATA_DIRECTIVE = 'X-Upyun-Metadata-Directive';
 
-    case LISIT_ITER = 'x-list-iter';
+    case LIST_ITER = 'x-list-iter';
 
     case LIST_LIMIT = 'x-list-limit';
 
