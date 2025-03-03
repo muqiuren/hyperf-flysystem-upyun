@@ -2,6 +2,8 @@
 
 namespace Muqiuren\Hyperf\Flysystem;
 
+use Exception;
+use Generator;
 use GuzzleHttp\Psr7\Utils;
 use League\Flysystem\Config;
 use League\Flysystem\FileAttributes;
@@ -17,6 +19,7 @@ use League\Flysystem\UnableToMoveFile;
 use League\Flysystem\UnableToReadFile;
 use League\Flysystem\UnableToSetVisibility;
 use League\Flysystem\UnableToWriteFile;
+use Muqiuren\Hyperf\Flysystem\Enums\UpyunFileTypeEnum;
 use Muqiuren\Hyperf\Flysystem\Enums\UpyunHeaderEnum;
 use Throwable;
 use Upyun\Upyun;
@@ -46,6 +49,7 @@ class UpyunServer implements FilesystemAdapter
      */
     protected function withAvailableHeaders(Config $config): array
     {
+        $config = $config->extend($this->options);
         $availableHeaders = UpyunHeaderEnum::getValues();
         return array_filter($config->toArray(), fn($v, $k) => in_array($k, $availableHeaders, true), ARRAY_FILTER_USE_BOTH);
     }
@@ -254,10 +258,69 @@ class UpyunServer implements FilesystemAdapter
         }
     }
 
+    /**
+     * 获取分页列表
+     * @param array $params
+     * @return Generator
+     * @throws Exception
+     */
+    protected function getPaginatorList(array $params): Generator
+    {
+        $config = new Config($params['options'] ?? []);
+        $list = $this->client->read($params['path'], params: $this->withAvailableHeaders($config));
+
+        $fileType = UpyunFileTypeEnum::FILE_TYPE->value;
+        $folderType = UpyunFileTypeEnum::FOLDER_TYPE->value;
+
+        foreach ($list['files'] ?? [] as $item) {
+            if ($item['type'] === $fileType) {
+                $item['path'] = $params['path'];
+                yield $item;
+            } else if ($params['deep'] && $item['type'] === $folderType) {
+                yield from $this->getPaginatorList([
+                    'path' => $this->prefixer->prefixPath($params['path']) . $item['name'] . '/',
+                    'deep' => $params['deep'],
+                ]);
+            }
+        }
+
+        if (!empty($list['is_end']) === false) {
+            $params['options'][UpyunHeaderEnum::LIST_ITER->value] = $list['iter'];
+            yield from $this->getPaginatorList($params);
+        }
+    }
+
+    /**
+     * 重构file item
+     * @param array $item
+     * @return FileAttributes
+     */
+    protected function rebuildFileAttributes(array $item): FileAttributes
+    {
+        return new FileAttributes(
+            $item['path'] . $item['name'],
+            $item['size'],
+            lastModified: $item['time'],
+        );
+    }
+
+    /**
+     * 获取目录文件列表
+     * @param string $path
+     * @param bool $deep
+     * @return iterable
+     * @throws Exception
+     */
     public function listContents(string $path, bool $deep): iterable
     {
-        // TODO: Implement listContents() method.
-        return  [];
+        $path = rtrim($this->prefixer->prefixPath($path), '/') . '/';
+        $list = $this->getPaginatorList([
+            'path' => $path,
+            'deep' => $deep
+        ]);
+        foreach ($list as $item) {
+            yield $this->rebuildFileAttributes($item);
+        }
     }
 
     /**
